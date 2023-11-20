@@ -2,11 +2,15 @@ import 'package:dartz/dartz.dart';
 import 'package:desafio_tecnico_2/core/usecase/errors/failures.dart';
 import 'package:desafio_tecnico_2/core/usecase/usecase.dart';
 import 'package:desafio_tecnico_2/features/book/domain/entities/book_entity.dart';
+import 'package:desafio_tecnico_2/features/book/domain/repositories/books_repository.dart';
 
-class FetchAllBooksUseCase implements UseCase<List<BookEntity>, NoParams> {
+class FetchAllBooksUsecase implements Usecase<List<BookEntity>, NoParams> {
+  final IBooksRepository repository;
+
+  FetchAllBooksUsecase({required this.repository});
+
   @override
-  Future<Either<Failure, List<BookEntity>>> call(NoParams params) {
-    // TODO: implement call
-    throw UnimplementedError();
+  Future<Either<Failure, List<BookEntity>>> call(NoParams params) async {
+    return await repository.fetchAllBooks();
   }
 }
