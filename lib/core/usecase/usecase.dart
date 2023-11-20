@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:desafio_tecnico_2/core/usecase/errors/failures.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class Usecase<Output, Input> {
+abstract class UseCase<Output, Input> {
   Future<Either<Failure, Output>> call(Input params);
 }
 
