@@ -6,7 +6,7 @@ import 'package:desafio_tecnico_2/features/book/domain/repositories/books_reposi
 import 'package:desafio_tecnico_2/features/book/infra/datasources/books_datasource.dart';
 
 class BooksRepositoryImplementation implements IBooksRepository {
-  final BooksDatasource datasource;
+  final IBooksDatasource datasource;
 
   BooksRepositoryImplementation({required this.datasource});
 
