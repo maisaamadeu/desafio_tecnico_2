@@ -1,4 +1,6 @@
-class BookEntity {
+import 'package:equatable/equatable.dart';
+
+class BookEntity extends Equatable {
   final int id;
   final String title;
   final String author;
@@ -12,4 +14,13 @@ class BookEntity {
     required this.coverUrl,
     required this.downloadUrl,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        author,
+        coverUrl,
+        downloadUrl,
+      ];
 }
