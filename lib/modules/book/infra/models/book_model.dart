@@ -1,4 +1,4 @@
-import 'package:desafio_tecnico_2/features/book/domain/entities/book_entity.dart';
+import 'package:desafio_tecnico_2/modules/book/domain/entities/book_entity.dart';
 
 class BookModel extends BookEntity {
   BookModel({

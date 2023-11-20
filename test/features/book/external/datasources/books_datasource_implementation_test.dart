@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:desafio_tecnico_2/core/usecase/errors/exceptions.dart';
-import 'package:desafio_tecnico_2/features/book/external/datasources/books_datasource_implementation.dart';
+import 'package:desafio_tecnico_2/modules/book/external/datasources/books_datasource_implementation.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

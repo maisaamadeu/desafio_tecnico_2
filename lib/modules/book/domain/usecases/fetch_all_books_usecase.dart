@@ -1,8 +1,8 @@
 import 'package:dartz/dartz.dart';
 import 'package:desafio_tecnico_2/core/usecase/errors/failures.dart';
 import 'package:desafio_tecnico_2/core/usecase/usecase.dart';
-import 'package:desafio_tecnico_2/features/book/domain/entities/book_entity.dart';
-import 'package:desafio_tecnico_2/features/book/domain/repositories/books_repository.dart';
+import 'package:desafio_tecnico_2/modules/book/domain/entities/book_entity.dart';
+import 'package:desafio_tecnico_2/modules/book/domain/repositories/books_repository.dart';
 
 class FetchAllBooksUsecase implements Usecase<List<BookEntity>, NoParams> {
   final IBooksRepository repository;

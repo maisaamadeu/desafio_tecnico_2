@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:desafio_tecnico_2/features/book/domain/entities/book_entity.dart';
-import 'package:desafio_tecnico_2/features/book/infra/models/book_model.dart';
+import 'package:desafio_tecnico_2/modules/book/domain/entities/book_entity.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/models/book_model.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../mocks/book_mock.dart';

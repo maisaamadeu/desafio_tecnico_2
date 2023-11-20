@@ -1,9 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:desafio_tecnico_2/core/usecase/errors/exceptions.dart';
 import 'package:desafio_tecnico_2/core/usecase/errors/failures.dart';
-import 'package:desafio_tecnico_2/features/book/infra/datasources/books_datasource.dart';
-import 'package:desafio_tecnico_2/features/book/infra/models/book_model.dart';
-import 'package:desafio_tecnico_2/features/book/infra/repositories/books_repository_implementation.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/datasources/books_datasource.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/models/book_model.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/repositories/books_repository_implementation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

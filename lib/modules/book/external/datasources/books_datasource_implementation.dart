@@ -1,6 +1,6 @@
 import 'package:desafio_tecnico_2/core/usecase/errors/exceptions.dart';
-import 'package:desafio_tecnico_2/features/book/infra/datasources/books_datasource.dart';
-import 'package:desafio_tecnico_2/features/book/infra/models/book_model.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/datasources/books_datasource.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/models/book_model.dart';
 import 'package:dio/dio.dart';
 
 class BooksDatasourceImplementation implements IBooksDatasource {
