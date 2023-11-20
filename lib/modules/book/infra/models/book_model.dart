@@ -24,4 +24,12 @@ class BookModel extends BookEntity {
         'cover_url': coverUrl,
         'download_url': downloadUrl,
       };
+
+  factory BookModel.fromBookEntity(BookEntity entity) => BookModel(
+        id: entity.id,
+        title: entity.title,
+        author: entity.author,
+        coverUrl: entity.coverUrl,
+        downloadUrl: entity.downloadUrl,
+      );
 }

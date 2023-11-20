@@ -12,23 +12,24 @@ class LocalStorageRepositoryImplementation implements ILocalStorageRepository {
   LocalStorageRepositoryImplementation({required this.datasource});
 
   @override
+  Future<Either<Failure, List<BookEntity>>> getFavoriteBooks() async {
+    try {
+      final result = await datasource.getFavoriteBooks();
+      return Right(result);
+    } on LocalStorageException {
+      return Left(LocalStorageFailure(message: 'Failed to get favorite books'));
+    }
+  }
+
+  @override
   Future<Either<Failure, List<BookEntity>>> addToFavoriteBooks(
       {required BookEntity book}) async {
     try {
       final result = await datasource.addToFavoriteBooks(book: book);
       return Right(result);
-    } on SharedPreferencesException {
-      return Left(ServerFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<BookEntity>>> getFavoriteBooks() async {
-    try {
-      final result = await datasource.getFavoriteBooks();
-      return Right(result);
-    } on SharedPreferencesException {
-      return Left(ServerFailure());
+    } on LocalStorageException {
+      return Left(
+          LocalStorageFailure(message: 'Failed to add book to favorites'));
     }
   }
 
@@ -38,8 +39,9 @@ class LocalStorageRepositoryImplementation implements ILocalStorageRepository {
     try {
       final result = await datasource.removeFromFavoriteBooks(book: book);
       return Right(result);
-    } on SharedPreferencesException {
-      return Left(ServerFailure());
+    } on LocalStorageException {
+      return Left(
+          LocalStorageFailure(message: 'Failed to remove book from favorites'));
     }
   }
 }
