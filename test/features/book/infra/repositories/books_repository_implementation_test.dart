@@ -32,10 +32,15 @@ void main() {
   test(
     'should return list of book model when calls the datasource',
     () async {
+      // Arrange
       when(datasource.fetchAllBooks).thenAnswer(
         (invocation) async => tListBookModel,
       );
+
+      // Act
       final result = await repository.fetchAllBooks();
+
+      // Assert
       expect(
         result,
         Right(tListBookModel),
@@ -46,8 +51,13 @@ void main() {
   test(
     'should return a server failure when the calls to datasource is unsuccessful',
     () async {
+      // Arrange
       when(datasource.fetchAllBooks).thenThrow(ServerException());
+
+      // Act
       final result = await repository.fetchAllBooks();
+
+      // Assert
       expect(
         result,
         Left(ServerFailure()),

@@ -17,16 +17,23 @@ void main() {
   );
 
   test('should be a subclass of BookEntity', () {
+    // Assert
     expect(tBookModel, isA<BookEntity>());
   });
 
   test('should return a valid model', () async {
+    // Arrange
     final Map<String, dynamic> jsonMap = json.decode(bookMock);
+
+    // Act
     final result = BookModel.fromJson(jsonMap);
+
+    // Assert
     expect(result, tBookModel);
   });
 
   test('should return a json map containing the props data', () async {
+    // Arrange
     final expectedMap = {
       "id": 4,
       "title": "Lupe",
@@ -35,7 +42,11 @@ void main() {
           "https://www.gutenberg.org/cache/epub/63606/pg63606.cover.medium.jpg",
       "download_url": "https://www.gutenberg.org/ebooks/63606.epub3.images",
     };
+
+    // Act
     final result = tBookModel.toJson();
+
+    // Assert
     expect(expectedMap, result);
   });
 }
