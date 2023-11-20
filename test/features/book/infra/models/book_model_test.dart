@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../mocks/book_mock.dart';
 
 void main() {
-  final tBookModel = BookModel(
+  const tBookModel = BookModel(
     id: 4,
     title: "Lupe",
     author: "Affonso Celso",

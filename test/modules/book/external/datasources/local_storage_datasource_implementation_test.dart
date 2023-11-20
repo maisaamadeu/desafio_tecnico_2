@@ -66,7 +66,7 @@ void main() {
         when(() => sharedPreferences.setString('favoriteBooks', "any"))
             .thenAnswer((_) => Future.value(true));
 
-        final newFavorite = BookModel(
+        const newFavorite = BookModel(
             id: 1,
             title: 'Book 1',
             author: 'Author 1',
@@ -83,7 +83,7 @@ void main() {
         when(() => sharedPreferences.setString('favoriteBooks', "any"))
             .thenAnswer((_) => Future.value(false));
 
-        final newFavorite = BookModel(
+        const newFavorite = BookModel(
             id: 1,
             title: 'Book 1',
             author: 'Author 1',
@@ -99,13 +99,13 @@ void main() {
       test('should remove a book from favorites and return the updated list',
           () {
         final initialFavorites = <BookModel>[
-          BookModel(
+          const BookModel(
               id: 1,
               title: 'Book 1',
               author: 'Author 1',
               coverUrl: 'url',
               downloadUrl: 'url'),
-          BookModel(
+          const BookModel(
               id: 2,
               title: 'Book 2',
               author: 'Author 2',
@@ -125,7 +125,7 @@ void main() {
 
       test('should throw LocalStorageFailure if removing fails', () {
         final initialFavorites = <BookModel>[
-          BookModel(
+          const BookModel(
               id: 1,
               title: 'Book 1',
               author: 'Author 1',

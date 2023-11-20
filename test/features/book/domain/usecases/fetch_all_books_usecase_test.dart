@@ -19,7 +19,7 @@ void main() {
   });
 
   final tListBookEntity = [
-    BookEntity(
+    const BookEntity(
         id: 5,
         title: "Lupe",
         author: "Affonso Celso",

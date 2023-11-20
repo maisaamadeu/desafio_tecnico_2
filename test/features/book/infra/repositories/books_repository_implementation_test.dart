@@ -19,7 +19,7 @@ void main() {
   });
 
   final tListBookModel = [
-    BookModel(
+    const BookModel(
       id: 4,
       title: "Lupe",
       author: "Affonso Celso",

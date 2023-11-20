@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:desafio_tecnico_2/core/usecase/errors/failures.dart';
-import 'package:desafio_tecnico_2/modules/book/domain/entities/book_entity.dart';
 import 'package:desafio_tecnico_2/modules/book/infra/datasources/local_storage_datasource.dart';
 import 'package:desafio_tecnico_2/modules/book/infra/models/book_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -11,23 +10,27 @@ class LocalStorageDatasourceImplementation implements ILocalStorageDatasource {
   LocalStorageDatasourceImplementation({required this.sharedPreferences});
 
   @override
-  Future<List<BookEntity>> getFavoriteBooks() async {
+  Future<List<BookModel>> getFavoriteBooks() async {
     try {
-      // final List<String> encodedFavorites =
-      //     sharedPreferences.getStringList('favoriteBooks') ?? [];
-      // print(encodedFavorites);
+      verifyContainsKey();
 
-      return [];
+      final List<String> encodedFavorites =
+          sharedPreferences.getStringList('favoriteBooks') ?? [];
+
+      final List<BookModel> decodedFavorites = encodedFavorites
+          .map((e) => BookModel.fromJson(json.decode(e)))
+          .toList();
+
+      return decodedFavorites;
     } catch (e) {
       throw LocalStorageFailure(message: 'Failed to get favorite books');
     }
   }
 
   @override
-  Future<List<BookEntity>> addToFavoriteBooks(
-      {required BookEntity book}) async {
+  Future<List<BookModel>> addToFavoriteBooks({required BookModel book}) async {
     try {
-      final List<BookEntity> currentFavorites = await getFavoriteBooks();
+      final List<BookModel> currentFavorites = await getFavoriteBooks();
 
       currentFavorites.add(book);
 
@@ -40,10 +43,10 @@ class LocalStorageDatasourceImplementation implements ILocalStorageDatasource {
   }
 
   @override
-  Future<List<BookEntity>> removeFromFavoriteBooks(
-      {required BookEntity book}) async {
+  Future<List<BookModel>> removeFromFavoriteBooks(
+      {required BookModel book}) async {
     try {
-      final List<BookEntity> currentFavorites = await getFavoriteBooks();
+      final List<BookModel> currentFavorites = await getFavoriteBooks();
 
       currentFavorites.removeWhere((favorite) => favorite.id == book.id);
 
@@ -64,10 +67,9 @@ class LocalStorageDatasourceImplementation implements ILocalStorageDatasource {
     }
   }
 
-  Future<void> saveFavoriteBooks(List<BookEntity> favorites) async {
-    final encodedFavorites = jsonEncode(
-      favorites.map((book) => BookModel.fromBookEntity(book).toJson()).toList(),
-    );
-    await sharedPreferences.setString('favoriteBooks', encodedFavorites);
+  Future<void> saveFavoriteBooks(List<BookModel> favorites) async {
+    final encodedFavorites =
+        favorites.map((e) => json.encode(e.toJson())).toList();
+    await sharedPreferences.setStringList('favoriteBooks', encodedFavorites);
   }
 }

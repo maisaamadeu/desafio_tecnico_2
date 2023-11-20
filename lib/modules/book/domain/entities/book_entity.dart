@@ -7,7 +7,7 @@ class BookEntity extends Equatable {
   final String coverUrl;
   final String downloadUrl;
 
-  BookEntity({
+  const BookEntity({
     required this.id,
     required this.title,
     required this.author,

@@ -3,6 +3,7 @@ import 'package:desafio_tecnico_2/core/usecase/errors/failures.dart';
 import 'package:desafio_tecnico_2/core/usecase/usecase.dart';
 import 'package:desafio_tecnico_2/modules/book/domain/entities/book_entity.dart';
 import 'package:desafio_tecnico_2/modules/book/domain/repositories/local_storage_repository.dart';
+import 'package:desafio_tecnico_2/modules/book/infra/models/book_model.dart';
 
 class AddToFavoriteBooksUsecase
     implements Usecase<List<BookEntity>, BookEntity> {
@@ -12,6 +13,7 @@ class AddToFavoriteBooksUsecase
 
   @override
   Future<Either<Failure, List<BookEntity>>> call(BookEntity book) async {
-    return await repository.addToFavoriteBooks(book: book);
+    return await repository.addToFavoriteBooks(
+        book: BookModel.fromBookEntity(book));
   }
 }
