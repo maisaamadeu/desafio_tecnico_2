@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_modular: ^5.0.3
+  get: ^4.6.6
   mocktail: ^1.0.1
   shared_preferences: ^2.2.2
 
