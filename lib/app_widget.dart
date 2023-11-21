@@ -1,4 +1,4 @@
-import 'package:desafio_tecnico_2/modules/book/presenter/home_page.dart';
+import 'package:desafio_tecnico_2/features/presenter/home_page.dart';
 import 'package:flutter/material.dart';
 
 class AppWidget extends StatelessWidget {
