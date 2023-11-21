@@ -1,11 +1,16 @@
+import 'package:desafio_tecnico_2/features/presenter/books_page.dart';
+import 'package:desafio_tecnico_2/features/presenter/favorite_books_page.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
-import 'package:desafio_tecnico_2/features/presenter/widgets/custom_elevated_button_widget.dart';
+import 'package:desafio_tecnico_2/features/presenter/widgets/custom_elevated_button.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class BasePage extends StatelessWidget {
+  BasePage({super.key});
+
+  final PageController pageController = PageController(initialPage: 0);
 
   final AllBooksStore allBooksStore = Get.put<AllBooksStore>(AllBooksStore());
 
@@ -13,51 +18,46 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             children: [
               const SizedBox(height: 20),
               Row(
                 children: [
-                  CustomElevatedButtonWidget(
+                  CustomElevatedButton(
                     onPressed: () {},
                     text: 'Livros',
                     buttonColor: Colors.green,
                     iconData: Icons.book,
                     iconColor: Colors.white,
-                    textStyle: const TextStyle(
+                    textStyle: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 18,
                     ),
                   ),
                   const SizedBox(width: 10),
-                  CustomElevatedButtonWidget(
+                  CustomElevatedButton(
                     onPressed: () {},
                     text: 'Favoritos',
                     buttonColor: Colors.red,
                     iconData: Icons.favorite,
                     iconColor: Colors.white,
-                    textStyle: const TextStyle(
+                    textStyle: GoogleFonts.inter(
                       color: Colors.white,
                       fontSize: 18,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(width: 10),
-              Obx(
-                () => SizedBox(
-                  height: 500,
-                  child: ListView.separated(
-                    itemBuilder: (context, index) =>
-                        BookCard(book: allBooksStore.books[index]),
-                    itemCount: allBooksStore.books.length,
-                    separatorBuilder: (_, __) => const SizedBox(width: 10),
-                    scrollDirection: Axis.horizontal,
-                  ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: PageView(
+                  controller: pageController,
+                  children: [
+                    BooksPage(),
+                    FavoriteBooksPage(),
+                  ],
                 ),
               ),
             ],

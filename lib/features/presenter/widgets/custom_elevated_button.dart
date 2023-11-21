@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class CustomElevatedButtonWidget extends StatelessWidget {
-  const CustomElevatedButtonWidget({
+class CustomElevatedButton extends StatelessWidget {
+  const CustomElevatedButton({
     super.key,
     this.text,
     this.buttonColor,

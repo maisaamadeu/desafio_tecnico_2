@@ -24,69 +24,54 @@ class BookCard extends StatelessWidget {
       onTap: () {},
       onLongPress: () {},
       child: Container(
-        height: height ?? 300,
-        width: width ?? 250,
         margin: EdgeInsets.only(left: marginLeft ?? 0, right: marginRight ?? 0),
-        child: Stack(
+        child: Column(
           children: [
-            // Exibe um indicativo de que está carregando enquanto a imagem não aparece
-            const Positioned(
-              left: 0,
-              top: 0,
-              bottom: 0,
-              right: 0,
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-
-            // Exibe a imagem da semente (ou uma imagem padrão se não houver imagem disponível)
-            Positioned.fill(
-              left: 0,
-              top: 0,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Image.network(book.coverUrl),
-              ),
-            ),
-
-            // Adiciona uma sobreposição escura à imagem
-            Positioned.fill(
-              left: 0,
-              top: 0,
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.black.withOpacity(0.5),
+            Stack(
+              children: [
+                const Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  right: 0,
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.green,
+                    ),
+                  ),
                 ),
-              ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.network(book.coverUrl),
+                ),
+              ],
             ),
-            // Exibe o nome e a posição da semente
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Nome da semente
-                  Text(
-                    book.title,
-                    style: GoogleFonts.alegreya(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 10),
+                Text(
+                  book.title,
+                  style: GoogleFonts.inter(
+                    fontSize: 24,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
-                  // Posição da semente
-                  Text(
-                    'Autor: ${book.author}',
-                    style: GoogleFonts.alegreyaSans(
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  book.author,
+                  style: GoogleFonts.inter(
+                    fontSize: 18,
+                    color: Colors.black,
                   ),
-                ],
-              ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
+                ),
+              ],
             ),
           ],
         ),
