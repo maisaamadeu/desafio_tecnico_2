@@ -8,10 +8,26 @@ class AllBooksStore extends GetxController {
   final FetchAllBooksUsecase fetchAllBooksUsecase =
       Modular.get<FetchAllBooksUsecase>();
 
+  RxBool isLoading = RxBool(false);
   RxList<BookEntity> books = <BookEntity>[].obs;
 
   Future<void> fetchAllBooks() async {
-    final response = fetchAllBooksUsecase(NoParams());
-    print(response);
+    isLoading(true);
+
+    final response = await fetchAllBooksUsecase(NoParams());
+
+    response.fold((l) => null, (r) {
+      books.value = r;
+    });
+
+    isLoading(false);
+  }
+
+  Future<void> updateListBooks(List<BookEntity> newBooks) async {
+    isLoading(true);
+
+    books.value = newBooks;
+
+    isLoading(false);
   }
 }

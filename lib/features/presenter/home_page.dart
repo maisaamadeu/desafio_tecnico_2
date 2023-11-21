@@ -5,15 +5,32 @@ import 'package:get/get.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
-  final AllBooksStore allBooksStore = Get.find<AllBooksStore>();
+  final AllBooksStore allBooksStore = Get.put<AllBooksStore>(AllBooksStore());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () async {},
-          child: Text('TESTE'),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text('Livros'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text('Favoritos'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          padding: EdgeInsets.symmetric(
+            horizontal: 20,
+          ),
         ),
       ),
     );
