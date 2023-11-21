@@ -1,14 +1,13 @@
 import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
-import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:vocsy_epub_viewer/epub_viewer.dart';
 
 class BookCard extends StatelessWidget {
-  BookCard({
+  const BookCard({
     super.key,
     required this.book,
     this.height,
@@ -29,8 +28,9 @@ class BookCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
-      onLongPress: () {},
+      onTap: () {
+        bookStore.openBook(context: context);
+      },
       child: Container(
         margin: EdgeInsets.only(left: marginLeft ?? 0, right: marginRight ?? 0),
         child: Column(
@@ -61,7 +61,7 @@ class BookCard extends StatelessWidget {
                               ? Colors.red
                               : Colors.white,
                           size: 48,
-                          shadows: <Shadow>[
+                          shadows: const <Shadow>[
                             Shadow(
                               color: Colors.black54,
                               blurRadius: 20.0,
@@ -70,9 +70,9 @@ class BookCard extends StatelessWidget {
                         ),
                         onPressed: () async {
                           if (bookStore.isFavorited.value) {
-                            bookStore.removeFromFavoriteBooks(book);
+                            bookStore.removeFromFavoriteBooks();
                           } else {
-                            bookStore.addToFavoriteBooks(book);
+                            bookStore.addToFavoriteBooks();
                           }
                         },
                         padding: EdgeInsets.zero,
