@@ -30,4 +30,10 @@ class AllBooksStore extends GetxController {
 
     isLoading(false);
   }
+
+  @override
+  void onInit() async {
+    super.onInit();
+    await fetchAllBooks();
+  }
 }
