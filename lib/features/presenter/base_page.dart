@@ -1,6 +1,7 @@
 import 'package:desafio_tecnico_2/features/presenter/books_page.dart';
 import 'package:desafio_tecnico_2/features/presenter/favorite_books_page.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
+import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/custom_elevated_button.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +13,8 @@ class BasePage extends StatelessWidget {
 
   final PageController pageController = PageController(initialPage: 0);
 
+  final FavoriteBooksStore favoriteBooksStore =
+      Get.put<FavoriteBooksStore>(FavoriteBooksStore());
   final AllBooksStore allBooksStore = Get.put<AllBooksStore>(AllBooksStore());
 
   @override

@@ -19,6 +19,7 @@ class AppModule extends Module {
             LocalStorageDatasourceImplementation(sharedPreferences: i())),
         Bind((i) => LocalStorageRepositoryImplementation(datasource: i())),
         Bind((i) => GetFavoriteBooksUsecase(repository: i())),
+        Bind((i) => GetFavoriteBooksUsecase(repository: i())),
         Bind((i) => AddToFavoriteBooksUsecase(repository: i())),
         Bind((i) => RemoveFromFavoriteBooksUsecase(repository: i())),
         Bind((i) => BooksDatasourceImplementation(dio: i())),

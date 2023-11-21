@@ -1,16 +1,24 @@
 import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
+import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
+import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class BookCard extends StatelessWidget {
-  const BookCard({
+  BookCard({
     super.key,
     required this.book,
     this.height,
     this.width,
     this.marginLeft,
     this.marginRight,
+    required this.bookStore,
   });
+
+  final BookStore bookStore;
 
   final BookEntity book;
   final double? height;
@@ -27,24 +35,52 @@ class BookCard extends StatelessWidget {
         margin: EdgeInsets.only(left: marginLeft ?? 0, right: marginRight ?? 0),
         child: Column(
           children: [
-            Stack(
-              children: [
-                const Positioned(
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  right: 0,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      color: Colors.green,
+            CachedNetworkImage(
+              imageUrl: book.coverUrl,
+              progressIndicatorBuilder: (context, url, downloadProgress) =>
+                  CircularProgressIndicator(
+                value: downloadProgress.progress,
+                color: Colors.green,
+              ),
+              errorWidget: (context, url, error) => const Icon(Icons.error),
+              imageBuilder: (context, imageProvider) => Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadiusDirectional.circular(10),
+                    child: Image(
+                      image: imageProvider,
                     ),
                   ),
-                ),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.network(book.coverUrl),
-                ),
-              ],
+                  Obx(
+                    () => Positioned(
+                      right: 0,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.bookmark,
+                          color: bookStore.isFavorited.value
+                              ? Colors.red
+                              : Colors.white,
+                          size: 48,
+                          shadows: <Shadow>[
+                            Shadow(
+                              color: Colors.black54,
+                              blurRadius: 20.0,
+                            )
+                          ],
+                        ),
+                        onPressed: () async {
+                          if (bookStore.isFavorited.value) {
+                            bookStore.removeFromFavoriteBooks(book);
+                          } else {
+                            bookStore.addToFavoriteBooks(book);
+                          }
+                        },
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.end,
