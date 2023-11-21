@@ -1,6 +1,6 @@
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/custom_elevated_button_widget.dart';
-import 'package:desafio_tecnico_2/features/presenter/widgets/seed_card.dart';
+import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
