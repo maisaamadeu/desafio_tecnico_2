@@ -1,7 +1,10 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
+import 'package:desafio_tecnico_2/features/presenter/widgets/custom_alert_dialog.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,53 +32,78 @@ class BookCard extends StatelessWidget {
   final double? marginLeft;
   final double? marginRight;
 
-  Future<bool> getPermissions() async {
-    bool gotPermissions = false;
+  Future<bool> _requestStoragePermission(BuildContext context) async {
+    final androidVersion = await DeviceInfoPlugin().androidInfo;
 
-    var androidInfo = await DeviceInfoPlugin().androidInfo;
-    var sdkInt = androidInfo.version.sdkInt;
-
-    if (Platform.isAndroid) {
-      var storage = await Permission.storage.status;
-
-      if (storage != PermissionStatus.granted) {
-        await Permission.storage.request();
-      }
-
-      if (sdkInt >= 30) {
-        var storageExternal = await Permission.manageExternalStorage.status;
-
-        if (storageExternal != PermissionStatus.granted) {
-          await Permission.manageExternalStorage.request();
-        }
-
-        storageExternal = await Permission.manageExternalStorage.status;
-
-        if (storageExternal == PermissionStatus.granted &&
-            storage == PermissionStatus.granted) {
-          gotPermissions = true;
-        }
-      } else {
-        storage = await Permission.storage.status;
-
-        if (storage == PermissionStatus.granted) {
-          gotPermissions = true;
-        }
-      }
+    if ((androidVersion.version.sdkInt) >= 30) {
+      return await checkManageStoragePermission(context);
+    } else {
+      return await checkStoragePermission(context);
     }
+  }
 
-    return gotPermissions;
+  static Future<bool> checkManageStoragePermission(BuildContext context) async {
+    return (await Permission.manageExternalStorage.isGranted ||
+        await Permission.manageExternalStorage.request().isGranted);
+  }
+
+  static Future<bool> checkStoragePermission(BuildContext context,
+      {String? storageTitle, String? storageSubMessage}) async {
+    if (await Permission.storage.isGranted ||
+        await Permission.storage.request().isGranted) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        final permissions = await getPermissions();
-
-        if (permissions) {
-          await bookStore.openBook();
+        bool result = await _requestStoragePermission(context);
+        if (result) {
+          bookStore.openBook();
+        } else {
+          showDialog(
+            context: context,
+            builder: (_) => CustomAlertDialog().showCustomAlertDialog(
+              title: 'Autorização Negada',
+              icon: const Icon(
+                Icons.close,
+                color: Colors.red,
+                size: 96,
+              ),
+              content:
+                  'Você recusou a autorização para acessar o armazenamento do dispositivo, impedindo o aplicativo de baixar e abrir livros. Para resolver, acesse as configurações do aplicativo e conceda permissão de acesso ao armazenamento.',
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    openAppSettings();
+                  },
+                  child: const Text(
+                    'ABRIR CONFIGURAÇÕES',
+                    style: TextStyle(
+                      color: Colors.green,
+                    ),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'DEPOIS',
+                    style: TextStyle(
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         }
+        // await bookStore.openBook();
       },
       child: Ink(
         child: Container(
