@@ -61,7 +61,8 @@ class BookStore extends GetxController {
 
       ScaffoldMessenger.of(Get.context!).showSnackBar(
         const SnackBar(
-            content: Text('Seu livro foi baixado na sua pasta de Downloads!')),
+          content: Text('Seu livro foi salvo na sua pasta de Downloads!'),
+        ),
       );
 
       await Future.delayed(const Duration(seconds: 2));
@@ -88,6 +89,9 @@ class BookStore extends GetxController {
       VocsyEpub.setConfig(
         themeColor: Colors.green,
         scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+        allowSharing: true,
+        enableTts: true,
+        nightMode: false,
       );
 
       await Future.delayed(const Duration(seconds: 2));

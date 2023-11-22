@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -21,31 +19,29 @@ class BookCard extends StatelessWidget {
   final BookStore bookStore;
   final BookEntity book;
 
-  Future<bool> _requestStoragePermission(BuildContext context) async {
+  Future<bool> _requestStoragePermission() async {
     final androidVersion = await DeviceInfoPlugin().androidInfo;
 
     if ((androidVersion.version.sdkInt) >= 30) {
-      return await checkManageStoragePermission(context);
+      return await checkManageStoragePermission();
     } else {
-      return await checkStoragePermission(context);
+      return await checkStoragePermission();
     }
   }
 
-  static Future<bool> checkManageStoragePermission(BuildContext context) async {
+  static Future<bool> checkManageStoragePermission() async {
     return await Permission.manageExternalStorage.isGranted ||
         await Permission.manageExternalStorage.request().isGranted;
   }
 
-  static Future<bool> checkStoragePermission(
-    BuildContext context,
-  ) async {
+  static Future<bool> checkStoragePermission() async {
     return await Permission.storage.isGranted ||
         await Permission.storage.request().isGranted;
   }
 
-  Future<void> _showPermissionDeniedDialog(BuildContext context) async {
+  Future<void> _showPermissionDeniedDialog() async {
     showDialog(
-      context: context,
+      context: Get.context!,
       builder: (_) => CustomAlertDialog().showCustomAlertDialog(
         title: 'Autorização Negada',
         icon: const Icon(
@@ -69,7 +65,7 @@ class BookCard extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(Get.context!);
             },
             child: const Text(
               'DEPOIS',
@@ -84,11 +80,11 @@ class BookCard extends StatelessWidget {
   }
 
   Future<void> _onCardTap(BuildContext context) async {
-    bool result = await _requestStoragePermission(context);
+    bool result = await _requestStoragePermission();
     if (result) {
       bookStore.openBook();
     } else {
-      _showPermissionDeniedDialog(context);
+      _showPermissionDeniedDialog();
     }
   }
 
