@@ -43,7 +43,7 @@ class FavoriteBooksPage extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) => BookCard(
                       bookStore: Get.put(
-                        BookStore(context, book: reversedBooks[index]),
+                        BookStore(book: reversedBooks[index]),
                         tag: reversedBooks[index].id.toString(),
                       ),
                       book: reversedBooks[index],

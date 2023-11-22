@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously
-
 import 'dart:io';
 
 import 'package:dio/dio.dart';
@@ -16,14 +14,16 @@ import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store
 
 class BookStore extends GetxController {
   final FavoriteBooksStore favoriteBooksStore = Get.find<FavoriteBooksStore>();
-  RxBool isFavorited = RxBool(false);
+  late RxBool isFavorited;
 
-  final BookEntity book;
-  final BuildContext context;
-  late File file;
-  late SimpleFontelicoProgressDialog dialog;
+  late final BookEntity book;
+  late File _file;
+  late SimpleFontelicoProgressDialog _dialog;
+  late Dio _dio;
 
-  BookStore(this.context, {required this.book});
+  BookStore({required this.book}) {
+    isFavorited = RxBool(false);
+  }
 
   Future<void> addToFavoriteBooks() async {
     try {
@@ -43,42 +43,28 @@ class BookStore extends GetxController {
     }
   }
 
-  Future<void> downloadBook() async {
+  Future<void> downloadBook({bool downloadInDownloadsFolder = false}) async {
     final alreadyDownloaded = await verifyIfBookHasDownloaded();
     if (alreadyDownloaded) return;
 
-    final Dio dio = Modular.get();
-
     try {
-      dialog.show(
-        message: 'Baixando o livro...',
-        type: SimpleFontelicoProgressDialogType.normal,
-        elevation: 1,
-        horizontal: true,
-        width: 300,
-        indicatorColor: Colors.green,
-        textStyle: GoogleFonts.inter(
-          fontSize: 18,
-        ),
-        separation: 20,
-      );
+      _showProgressDialog('Baixando o livro...');
 
-      await dio.download(
-        book.downloadUrl
-            .replaceAll(".images", "")
-            .replaceAll(".noimages", "")
-            .replaceAll(".epub3", ".epub"),
-        file.path,
+      await _dio.download(
+        _getFormattedDownloadUrl(),
+        _file.path,
         deleteOnError: true,
         onReceiveProgress: (received, total) {},
       );
 
-      dialog.hide();
+      _dialog.hide();
 
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Seu livro foi baixado na sua pasta de Downloads!')));
+      ScaffoldMessenger.of(Get.context!).showSnackBar(
+        const SnackBar(
+            content: Text('Seu livro foi baixado na sua pasta de Downloads!')),
+      );
 
-      Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(seconds: 2));
     } catch (error) {
       debugPrint('Error downloading book: $error');
     }
@@ -88,36 +74,27 @@ class BookStore extends GetxController {
     String downloadsDirectory = await getDownloadFilePath();
     final fileName = book.title.toLowerCase().camelCase!;
     final filePath = '$downloadsDirectory/$fileName.epub';
-    file = File(filePath.replaceAll("'", ""));
+    _file = File(filePath.replaceAll("'", ""));
 
-    return await file.exists();
+    return await _file.exists();
   }
 
   Future<void> openBook() async {
     try {
       await downloadBook();
 
-      dialog.show(
-        message: 'Abrindo seu livro...',
-        type: SimpleFontelicoProgressDialogType.normal,
-        elevation: 1,
-        horizontal: true,
-        width: 300,
-        indicatorColor: Colors.green,
-        textStyle: GoogleFonts.inter(
-          fontSize: 18,
-        ),
-        separation: 20,
-      );
+      _showProgressDialog('Abrindo seu livro...');
 
       VocsyEpub.setConfig(
         themeColor: Colors.green,
         scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
       );
 
-      VocsyEpub.open(file.path);
+      await Future.delayed(const Duration(seconds: 2));
 
-      dialog.hide();
+      VocsyEpub.open(_file.path);
+
+      _dialog.hide();
     } catch (error) {
       debugPrint('Error opening book: $error');
     }
@@ -127,15 +104,39 @@ class BookStore extends GetxController {
     final appDocDir = Platform.isIOS
         ? await getApplicationDocumentsDirectory()
         : Directory('/storage/emulated/0/Download');
+
     return appDocDir.path;
+  }
+
+  String _getFormattedDownloadUrl() {
+    return book.downloadUrl
+        .replaceAll(".images", "")
+        .replaceAll(".noimages", "")
+        .replaceAll(".epub3", ".epub");
+  }
+
+  void _showProgressDialog(String message) {
+    _dialog.show(
+      message: message,
+      type: SimpleFontelicoProgressDialogType.normal,
+      elevation: 1,
+      horizontal: true,
+      width: 300,
+      indicatorColor: Colors.green,
+      textStyle: GoogleFonts.inter(
+        fontSize: 18,
+      ),
+      separation: 20,
+    );
   }
 
   @override
   void onInit() {
     super.onInit();
     try {
-      isFavorited(favoriteBooksStore.verifyIfBookIsFavorite(book));
-      dialog = SimpleFontelicoProgressDialog(context: context);
+      isFavorited.value = favoriteBooksStore.verifyIfBookIsFavorite(book);
+      _dialog = SimpleFontelicoProgressDialog(context: Get.context!);
+      _dio = Modular.get<Dio>();
     } catch (error) {
       debugPrint('Error initializing book: $error');
     }
