@@ -1,7 +1,5 @@
 # Desafio Técnico 2 - Aplicativo de Leitura de eBooks
 
-### Este é um desafio técnico para uma vaga de emprego que consiste no desenvolvimento de um aplicativo de leitura de eBooks em Flutter.
-
 # Objetivo
 Desenvolver um aplicativo que ofereça uma experiência interativa e fácil de usar para os usuários. O aplicativo deve ser capaz de baixar uma lista de livros e suas capas, exibir as capas em uma estante virtual, permitir o download de livros e a leitura dos mesmos utilizando um plugin específico.
 
