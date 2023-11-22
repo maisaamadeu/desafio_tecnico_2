@@ -1,8 +1,5 @@
 # Desafio Técnico 2 - Aplicativo de Leitura de eBooks
 
-# Objetivo
-Desenvolver um aplicativo que ofereça uma experiência interativa e fácil de usar para os usuários. O aplicativo deve ser capaz de baixar uma lista de livros e suas capas, exibir as capas em uma estante virtual, permitir o download de livros e a leitura dos mesmos utilizando um plugin específico.
-
 # Teste o Aplicativo Facilmente
 Se você possui um dispositivo Android e deseja simplesmente experimentar o funcionamento do aplicativo sem precisar examinar o código-fonte, siga estas etapas:
 
