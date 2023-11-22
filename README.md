@@ -2,6 +2,10 @@
 
 No desenvolvimento deste aplicativo utilizando o Flutter, adotei os princípios do SOLID, usei Flutter Modular, usei o GetX e busquei aplicar o máximo do meu conhecimento em arquitetura limpa. Escrevi diversos testes; contudo, devido à restrição de tempo para a entrega, não foi possível cobrir integralmente todo o código.
 
+“O uso de comentários serve para compensar nossa falha em nos expressarmos através do código.”
+
+~ Tio Bob
+
 # Teste o Aplicativo Facilmente
 Se você possui um dispositivo Android e deseja simplesmente experimentar o funcionamento do aplicativo sem precisar examinar o código-fonte, siga estas etapas:
 
