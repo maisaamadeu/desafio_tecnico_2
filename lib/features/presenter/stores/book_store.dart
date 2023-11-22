@@ -7,6 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -15,9 +17,13 @@ class BookStore extends GetxController {
   RxBool isFavorited = RxBool(false);
 
   final BookEntity book;
+  final BuildContext context;
   File? file;
 
-  BookStore({required this.book});
+  RxDouble receivedBytes = 0.0.obs;
+  RxDouble totalBytes = 0.0.obs;
+
+  BookStore(this.context, {required this.book});
 
   Future<void> addToFavoriteBooks() async {
     favoriteBooksStore.addToFavoriteBooks(book);
@@ -29,9 +35,50 @@ class BookStore extends GetxController {
     isFavorited(false);
   }
 
-  Future<void> downloadBook({required BuildContext context}) async {
-    String fileName = book.title.toLowerCase().camelCase!;
+  Future<void> downloadBook() async {
     final Dio dio = Modular.get();
+
+    try {
+      await file!.create();
+      String correctedDownloadUrl = book.downloadUrl
+          .replaceAll(".images", "")
+          .replaceAll(".noimages", "")
+          .replaceAll(".epub3", ".epub");
+
+      SimpleFontelicoProgressDialog _dialog =
+          SimpleFontelicoProgressDialog(context: context);
+
+      _dialog.show(
+        message: 'Baixando o livro...',
+        type: SimpleFontelicoProgressDialogType.normal,
+        elevation: 1,
+        horizontal: true,
+        width: 300,
+        indicatorColor: Colors.green,
+        textStyle: GoogleFonts.inter(
+          fontSize: 18,
+        ),
+        separation: 20,
+      );
+
+      await dio.download(
+        correctedDownloadUrl,
+        file!.path,
+        deleteOnError: true,
+        onReceiveProgress: (receivedBytes, totalBytes) {
+          receivedBytes = receivedBytes;
+          totalBytes = totalBytes;
+        },
+      );
+
+      _dialog.hide();
+    } catch (error) {
+      return;
+    }
+  }
+
+  Future<bool> verifyIfBookHasDownloaded() async {
+    String fileName = book.title.toLowerCase().camelCase!;
 
     Directory? appDocDir;
 
@@ -47,33 +94,14 @@ class BookStore extends GetxController {
     String filePath = '${appDocDir!.path}/$fileName.epub';
     file = File(filePath);
 
-    try {
-      if (!file!.existsSync()) {
-        await file!.create();
-        String correctedDownloadUrl = book.downloadUrl
-            .replaceAll(".images", "")
-            .replaceAll(".noimages", "")
-            .replaceAll(".epub3", ".epub");
-
-        await dio.download(
-          correctedDownloadUrl,
-          filePath,
-          deleteOnError: true,
-          onReceiveProgress: (receivedBytes, totalBytes) {
-            print("$receivedBytes de $totalBytes");
-          },
-        );
-      }
-    } catch (error) {
-      return;
+    if (!file!.existsSync()) {
+      return false;
     }
+
+    return true;
   }
 
-  Future<void> openBook({required BuildContext context}) async {
-    if (file == null) {
-      await downloadBook(context: context);
-    }
-
+  Future<void> openBook() async {
     VocsyEpub.setConfig(
       themeColor: Colors.green,
       scrollDirection: EpubScrollDirection.ALLDIRECTIONS,

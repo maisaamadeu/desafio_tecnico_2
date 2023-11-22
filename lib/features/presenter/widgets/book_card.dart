@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:vocsy_epub_viewer/epub_viewer.dart';
+import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 
 class BookCard extends StatelessWidget {
   const BookCard({
@@ -27,89 +27,99 @@ class BookCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        bookStore.openBook(context: context);
+    return InkWell(
+      onTap: () async {
+        bool hasDowloaded = await bookStore.verifyIfBookHasDownloaded();
+
+        if (hasDowloaded == false) {
+          await bookStore.downloadBook();
+          bookStore.openBook();
+        } else {
+          bookStore.openBook();
+        }
       },
-      child: Container(
-        margin: EdgeInsets.only(left: marginLeft ?? 0, right: marginRight ?? 0),
-        child: Column(
-          children: [
-            CachedNetworkImage(
-              imageUrl: book.coverUrl,
-              progressIndicatorBuilder: (context, url, downloadProgress) =>
-                  CircularProgressIndicator(
-                value: downloadProgress.progress,
-                color: Colors.green,
-              ),
-              errorWidget: (context, url, error) => const Icon(Icons.error),
-              imageBuilder: (context, imageProvider) => Stack(
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadiusDirectional.circular(10),
-                    child: Image(
-                      image: imageProvider,
-                    ),
-                  ),
-                  Obx(
-                    () => Positioned(
-                      right: 0,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.bookmark,
-                          color: bookStore.isFavorited.value
-                              ? Colors.red
-                              : Colors.white,
-                          size: 48,
-                          shadows: const <Shadow>[
-                            Shadow(
-                              color: Colors.black54,
-                              blurRadius: 20.0,
-                            )
-                          ],
-                        ),
-                        onPressed: () async {
-                          if (bookStore.isFavorited.value) {
-                            bookStore.removeFromFavoriteBooks();
-                          } else {
-                            bookStore.addToFavoriteBooks();
-                          }
-                        },
-                        padding: EdgeInsets.zero,
+      child: Ink(
+        child: Container(
+          margin:
+              EdgeInsets.only(left: marginLeft ?? 0, right: marginRight ?? 0),
+          child: Column(
+            children: [
+              CachedNetworkImage(
+                imageUrl: book.coverUrl,
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    CircularProgressIndicator(
+                  value: downloadProgress.progress,
+                  color: Colors.green,
+                ),
+                errorWidget: (context, url, error) => const Icon(Icons.error),
+                imageBuilder: (context, imageProvider) => Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadiusDirectional.circular(10),
+                      child: Image(
+                        image: imageProvider,
                       ),
                     ),
+                    Obx(
+                      () => Positioned(
+                        right: 0,
+                        child: IconButton(
+                          icon: Icon(
+                            Icons.bookmark,
+                            color: bookStore.isFavorited.value
+                                ? Colors.red
+                                : Colors.white,
+                            size: 48,
+                            shadows: const <Shadow>[
+                              Shadow(
+                                color: Colors.black54,
+                                blurRadius: 20.0,
+                              )
+                            ],
+                          ),
+                          onPressed: () async {
+                            if (bookStore.isFavorited.value) {
+                              bookStore.removeFromFavoriteBooks();
+                            } else {
+                              bookStore.addToFavoriteBooks();
+                            }
+                          },
+                          padding: EdgeInsets.zero,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10),
+                  Text(
+                    book.title,
+                    style: GoogleFonts.inter(
+                      fontSize: 24,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    book.author,
+                    style: GoogleFonts.inter(
+                      fontSize: 18,
+                      color: Colors.black,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.start,
                   ),
                 ],
               ),
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10),
-                Text(
-                  book.title,
-                  style: GoogleFonts.inter(
-                    fontSize: 24,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  book.author,
-                  style: GoogleFonts.inter(
-                    fontSize: 18,
-                    color: Colors.black,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.start,
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

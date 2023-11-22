@@ -41,6 +41,7 @@ class BooksPage extends StatelessWidget {
                     itemBuilder: (context, index) => BookCard(
                       bookStore: Get.put(
                           BookStore(
+                            context,
                             book: allBooksStore.books[index],
                           ),
                           tag: allBooksStore.books[index].id.toString()),

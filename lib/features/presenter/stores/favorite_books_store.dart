@@ -5,7 +5,6 @@ import 'package:desafio_tecnico_2/features/domain/usecases/get_favorite_books_us
 import 'package:desafio_tecnico_2/features/domain/usecases/remove_from_favorite_books_usecase.dart';
 import 'package:desafio_tecnico_2/features/external/datasources/local_storage_datasource_implementation.dart';
 import 'package:desafio_tecnico_2/features/infra/repositories/local_storage_repository_implementation.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
