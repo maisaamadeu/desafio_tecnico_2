@@ -30,6 +30,15 @@ class FavoriteBooksPage extends StatelessWidget {
                   );
                 }
 
+                if (favoriteBooksStore.hasError.value) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                          'Ocorreu um erro durante a execução do aplicativo. Reinicie e tente novamente'),
+                    ),
+                  );
+                }
+
                 List<BookEntity> reversedBooks =
                     favoriteBooksStore.favoriteBooks.reversed.toList();
 

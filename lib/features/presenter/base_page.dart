@@ -3,7 +3,6 @@ import 'package:desafio_tecnico_2/features/presenter/favorite_books_page.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/base_page_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
-import 'package:desafio_tecnico_2/features/presenter/theme/app_colors.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/custom_elevated_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

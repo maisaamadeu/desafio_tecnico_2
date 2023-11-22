@@ -1,5 +1,6 @@
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
+import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/theme/app_colors.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ class BooksPage extends StatelessWidget {
   BooksPage({super.key});
 
   final AllBooksStore allBooksStore = Get.find<AllBooksStore>();
+  final FavoriteBooksStore favoriteBooksStore = Get.find<FavoriteBooksStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,16 @@ class BooksPage extends StatelessWidget {
                       child: CircularProgressIndicator(
                         color: AppColors().primaryColor,
                       ),
+                    ),
+                  );
+                }
+
+                if (allBooksStore.hasError.value ||
+                    favoriteBooksStore.hasError.value) {
+                  return const Expanded(
+                    child: Center(
+                      child: Text(
+                          'Ocorreu um erro durante a execução do aplicativo. Reinicie e tente novamente'),
                     ),
                   );
                 }

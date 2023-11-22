@@ -10,13 +10,16 @@ class AllBooksStore extends GetxController {
 
   RxBool isLoading = RxBool(false);
   RxList<BookEntity> books = <BookEntity>[].obs;
+  RxBool hasError = RxBool(false);
 
   Future<void> fetchAllBooks() async {
     isLoading(true);
 
     final response = await fetchAllBooksUsecase(NoParams());
 
-    response.fold((l) => null, (r) {
+    response.fold((l) {
+      hasError(true);
+    }, (r) {
       books.value = r;
     });
 

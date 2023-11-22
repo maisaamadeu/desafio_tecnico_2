@@ -32,33 +32,40 @@ class FavoriteBooksStore extends GetxController {
   }
 
   RxBool isLoading = RxBool(false);
+  RxBool hasError = RxBool(false);
   RxList<BookEntity> favoriteBooks = <BookEntity>[].obs;
 
   Future<void> getFavoriteBooks() async {
     isLoading(true);
     final result = await getFavoriteBooksUsecase(NoParams());
-    result.fold((l) => null, (r) {
+    result.fold((l) {
+      hasError(true);
+    }, (r) {
       favoriteBooks.value = r;
-      isLoading(false);
     });
+    isLoading(false);
   }
 
   Future<void> addToFavoriteBooks(BookEntity book) async {
     isLoading(true);
     final result = await addToFavoriteBooksUsecase(book);
-    result.fold((l) => null, (r) {
+    result.fold((l) {
+      hasError(true);
+    }, (r) {
       favoriteBooks.value = r;
-      isLoading(false);
     });
+    isLoading(false);
   }
 
   Future<void> removeFromFavoriteBooks(BookEntity book) async {
     isLoading(true);
     final result = await removeFromFavoriteBooksUsecase(book);
-    result.fold((l) => null, (r) {
+    result.fold((l) {
+      hasError(true);
+    }, (r) {
       favoriteBooks.value = r;
-      isLoading(false);
     });
+    isLoading(false);
   }
 
   verifyIfBookIsFavorite(BookEntity book) {
