@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -26,25 +29,53 @@ class BookCard extends StatelessWidget {
   final double? marginLeft;
   final double? marginRight;
 
-  Future<void> requestPermissions() async {
-    var status = await Permission.storage.status;
-    if (status.isDenied) {
-      status = await Permission.storage.request();
+  Future<bool> getPermissions() async {
+    bool gotPermissions = false;
+
+    var androidInfo = await DeviceInfoPlugin().androidInfo;
+    var sdkInt = androidInfo.version.sdkInt;
+
+    if (Platform.isAndroid) {
+      var storage = await Permission.storage.status;
+
+      if (storage != PermissionStatus.granted) {
+        await Permission.storage.request();
+      }
+
+      if (sdkInt >= 30) {
+        var storageExternal = await Permission.manageExternalStorage.status;
+
+        if (storageExternal != PermissionStatus.granted) {
+          await Permission.manageExternalStorage.request();
+        }
+
+        storageExternal = await Permission.manageExternalStorage.status;
+
+        if (storageExternal == PermissionStatus.granted &&
+            storage == PermissionStatus.granted) {
+          gotPermissions = true;
+        }
+      } else {
+        storage = await Permission.storage.status;
+
+        if (storage == PermissionStatus.granted) {
+          gotPermissions = true;
+        }
+      }
     }
-    if (status.isGranted) {
-      // A permissão foi concedida
-      print("Permissão concedida!");
-    } else {
-      // A permissão foi negada
-      print("Permissão negada!");
-    }
+
+    return gotPermissions;
   }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        await requestPermissions();
+        final permissions = await getPermissions();
+
+        if (permissions) {
+          await bookStore.openBook();
+        }
       },
       child: Ink(
         child: Container(

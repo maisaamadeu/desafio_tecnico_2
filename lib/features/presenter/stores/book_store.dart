@@ -22,6 +22,7 @@ class BookStore extends GetxController {
   final BookEntity book;
   final BuildContext context;
   late File file;
+  late SimpleFontelicoProgressDialog dialog;
 
   BookStore(this.context, {required this.book});
 
@@ -50,9 +51,6 @@ class BookStore extends GetxController {
     final Dio dio = Modular.get();
 
     try {
-      SimpleFontelicoProgressDialog dialog =
-          SimpleFontelicoProgressDialog(context: context);
-
       dialog.show(
         message: 'Baixando o livro...',
         type: SimpleFontelicoProgressDialogType.normal,
@@ -77,6 +75,11 @@ class BookStore extends GetxController {
       );
 
       dialog.hide();
+
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Seu livro foi baixado na sua pasta de Downloads!')));
+
+      Future.delayed(const Duration(seconds: 2));
     } catch (error) {
       debugPrint('Error downloading book: $error');
     }
@@ -95,12 +98,27 @@ class BookStore extends GetxController {
     try {
       await downloadBook();
 
+      dialog.show(
+        message: 'Abrindo seu livro...',
+        type: SimpleFontelicoProgressDialogType.normal,
+        elevation: 1,
+        horizontal: true,
+        width: 300,
+        indicatorColor: Colors.green,
+        textStyle: GoogleFonts.inter(
+          fontSize: 18,
+        ),
+        separation: 20,
+      );
+
       VocsyEpub.setConfig(
         themeColor: Colors.green,
         scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
       );
 
       VocsyEpub.open(file.path);
+
+      dialog.hide();
     } catch (error) {
       debugPrint('Error opening book: $error');
     }
@@ -118,6 +136,7 @@ class BookStore extends GetxController {
     super.onInit();
     try {
       isFavorited(favoriteBooksStore.verifyIfBookIsFavorite(book));
+      dialog = SimpleFontelicoProgressDialog(context: context);
     } catch (error) {
       debugPrint('Error initializing book: $error');
     }
