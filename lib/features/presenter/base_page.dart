@@ -25,41 +25,45 @@ class BasePage extends StatelessWidget {
           child: Column(
             children: [
               const SizedBox(height: 20),
-              Row(
-                children: [
-                  CustomElevatedButton(
-                    onPressed: () {
-                      basePageStore.page = 0;
-                      basePageStore.navigateToPage();
-                    },
-                    text: 'Livros',
-                    buttonColor: basePageStore.page == 0
-                        ? Colors.green
-                        : Colors.green.shade100,
-                    iconData: Icons.book,
-                    iconColor: Colors.white,
-                    textStyle: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontSize: 18,
+              Obx(() {
+                return Row(
+                  children: [
+                    CustomElevatedButton(
+                      onPressed: () {
+                        basePageStore.page.value = 0;
+                        basePageStore.navigateToPage();
+                      },
+                      text: 'Livros',
+                      buttonColor: basePageStore.page.value == 0
+                          ? Colors.green
+                          : Colors.green.shade200,
+                      iconData: Icons.book,
+                      iconColor: Colors.white,
+                      textStyle: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  CustomElevatedButton(
-                    onPressed: () {
-                      basePageStore.page = 1;
-                      basePageStore.navigateToPage();
-                    },
-                    text: 'Favoritos',
-                    buttonColor: Colors.red,
-                    iconData: Icons.favorite,
-                    iconColor: Colors.white,
-                    textStyle: GoogleFonts.inter(
-                      color: Colors.white,
-                      fontSize: 18,
+                    const SizedBox(width: 10),
+                    CustomElevatedButton(
+                      onPressed: () {
+                        basePageStore.page.value = 1;
+                        basePageStore.navigateToPage();
+                      },
+                      text: 'Favoritos',
+                      buttonColor: basePageStore.page.value == 1
+                          ? Colors.red
+                          : Colors.red.shade200,
+                      iconData: Icons.favorite,
+                      iconColor: Colors.white,
+                      textStyle: GoogleFonts.inter(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                );
+              }),
               const SizedBox(height: 20),
               Obx(() {
                 return Expanded(
