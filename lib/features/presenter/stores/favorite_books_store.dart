@@ -29,6 +29,7 @@ class FavoriteBooksStore extends GetxController {
         AddToFavoriteBooksUsecase(repository: repository);
     removeFromFavoriteBooksUsecase =
         RemoveFromFavoriteBooksUsecase(repository: repository);
+    await getFavoriteBooks();
   }
 
   RxBool isLoading = RxBool(false);

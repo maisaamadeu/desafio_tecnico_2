@@ -1,9 +1,9 @@
 import 'package:desafio_tecnico_2/features/presenter/books_page.dart';
 import 'package:desafio_tecnico_2/features/presenter/favorite_books_page.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
+import 'package:desafio_tecnico_2/features/presenter/stores/base_page_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/custom_elevated_button.dart';
-import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -11,8 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 class BasePage extends StatelessWidget {
   BasePage({super.key});
 
-  final PageController pageController = PageController(initialPage: 0);
-
+  final BasePageStore basePageStore = Get.put(BasePageStore());
   final FavoriteBooksStore favoriteBooksStore =
       Get.put<FavoriteBooksStore>(FavoriteBooksStore());
   final AllBooksStore allBooksStore = Get.put<AllBooksStore>(AllBooksStore());
@@ -29,9 +28,14 @@ class BasePage extends StatelessWidget {
               Row(
                 children: [
                   CustomElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      basePageStore.page = 0;
+                      basePageStore.navigateToPage();
+                    },
                     text: 'Livros',
-                    buttonColor: Colors.green,
+                    buttonColor: basePageStore.page == 0
+                        ? Colors.green
+                        : Colors.green.shade100,
                     iconData: Icons.book,
                     iconColor: Colors.white,
                     textStyle: GoogleFonts.inter(
@@ -41,7 +45,10 @@ class BasePage extends StatelessWidget {
                   ),
                   const SizedBox(width: 10),
                   CustomElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      basePageStore.page = 1;
+                      basePageStore.navigateToPage();
+                    },
                     text: 'Favoritos',
                     buttonColor: Colors.red,
                     iconData: Icons.favorite,
@@ -54,15 +61,18 @@ class BasePage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-              Expanded(
-                child: PageView(
-                  controller: pageController,
-                  children: [
-                    BooksPage(),
-                    FavoriteBooksPage(),
-                  ],
-                ),
-              ),
+              Obx(() {
+                return Expanded(
+                  child: PageView(
+                    controller: basePageStore.pageController.value,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      BooksPage(),
+                      FavoriteBooksPage(),
+                    ],
+                  ),
+                );
+              }),
             ],
           ),
         ),

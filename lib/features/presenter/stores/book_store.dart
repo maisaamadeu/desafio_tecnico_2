@@ -7,16 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:get/get.dart';
-import 'package:flutter_file_downloader/flutter_file_downloader.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
-
 import 'package:path_provider/path_provider.dart';
-
-extension on String {
-  normalize() {
-    return replaceAll(" ", "+");
-  }
-}
 
 class BookStore extends GetxController {
   final FavoriteBooksStore favoriteBooksStore = Get.find<FavoriteBooksStore>();
@@ -52,22 +44,28 @@ class BookStore extends GetxController {
       }
     }
 
-    String path = '${appDocDir!.path}/$fileName.epub';
-    file = File(path);
+    String filePath = '${appDocDir!.path}/$fileName.epub';
+    file = File(filePath);
 
-    if (!File(path).existsSync()) {
-      await file!.create();
-      await dio
-          .download(
-            book.downloadUrl
-                .replaceAll(".images", "")
-                .replaceAll(".noimages", "")
-                .replaceAll(".epub3", ".epub"),
-            path,
-            deleteOnError: true,
-            onReceiveProgress: (receivedBytes, totalBytes) {},
-          )
-          .whenComplete(() {});
+    try {
+      if (!file!.existsSync()) {
+        await file!.create();
+        String correctedDownloadUrl = book.downloadUrl
+            .replaceAll(".images", "")
+            .replaceAll(".noimages", "")
+            .replaceAll(".epub3", ".epub");
+
+        await dio.download(
+          correctedDownloadUrl,
+          filePath,
+          deleteOnError: true,
+          onReceiveProgress: (receivedBytes, totalBytes) {
+            print("$receivedBytes de $totalBytes");
+          },
+        );
+      }
+    } catch (error) {
+      return;
     }
   }
 
