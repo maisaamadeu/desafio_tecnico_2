@@ -1,3 +1,4 @@
+import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
@@ -28,6 +29,9 @@ class FavoriteBooksPage extends StatelessWidget {
                   );
                 }
 
+                List<BookEntity> reversedBooks =
+                    favoriteBooksStore.favoriteBooks.reversed.toList();
+
                 return Expanded(
                   child: GridView.builder(
                     gridDelegate:
@@ -39,14 +43,12 @@ class FavoriteBooksPage extends StatelessWidget {
                     ),
                     itemBuilder: (context, index) => BookCard(
                       bookStore: Get.put(
-                        BookStore(context,
-                            book: favoriteBooksStore.favoriteBooks[index]),
-                        tag: favoriteBooksStore.favoriteBooks[index].id
-                            .toString(),
+                        BookStore(context, book: reversedBooks[index]),
+                        tag: reversedBooks[index].id.toString(),
                       ),
-                      book: favoriteBooksStore.favoriteBooks[index],
+                      book: reversedBooks[index],
                     ),
-                    itemCount: favoriteBooksStore.favoriteBooks.length,
+                    itemCount: reversedBooks.length,
                   ),
                 );
               },

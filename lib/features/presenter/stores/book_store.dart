@@ -1,16 +1,19 @@
-import 'dart:async';
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
-import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
-import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 import 'package:dio/dio.dart';
+import 'package:downloads_path_provider_28/downloads_path_provider_28.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 import 'package:vocsy_epub_viewer/epub_viewer.dart';
-import 'package:path_provider/path_provider.dart';
+
+import 'package:desafio_tecnico_2/features/domain/entities/book_entity.dart';
+import 'package:desafio_tecnico_2/features/presenter/stores/favorite_books_store.dart';
 
 class BookStore extends GetxController {
   final FavoriteBooksStore favoriteBooksStore = Get.find<FavoriteBooksStore>();
@@ -18,37 +21,39 @@ class BookStore extends GetxController {
 
   final BookEntity book;
   final BuildContext context;
-  File? file;
-
-  RxDouble receivedBytes = 0.0.obs;
-  RxDouble totalBytes = 0.0.obs;
+  late File file;
 
   BookStore(this.context, {required this.book});
 
   Future<void> addToFavoriteBooks() async {
-    favoriteBooksStore.addToFavoriteBooks(book);
-    isFavorited(true);
+    try {
+      favoriteBooksStore.addToFavoriteBooks(book);
+      isFavorited(true);
+    } catch (error) {
+      debugPrint('Error adding to favorite books: $error');
+    }
   }
 
   Future<void> removeFromFavoriteBooks() async {
-    favoriteBooksStore.removeFromFavoriteBooks(book);
-    isFavorited(false);
+    try {
+      favoriteBooksStore.removeFromFavoriteBooks(book);
+      isFavorited(false);
+    } catch (error) {
+      debugPrint('Error removing from favorite books: $error');
+    }
   }
 
   Future<void> downloadBook() async {
+    final alreadyDownloaded = await verifyIfBookHasDownloaded();
+    if (alreadyDownloaded) return;
+
     final Dio dio = Modular.get();
 
     try {
-      await file!.create();
-      String correctedDownloadUrl = book.downloadUrl
-          .replaceAll(".images", "")
-          .replaceAll(".noimages", "")
-          .replaceAll(".epub3", ".epub");
-
-      SimpleFontelicoProgressDialog _dialog =
+      SimpleFontelicoProgressDialog dialog =
           SimpleFontelicoProgressDialog(context: context);
 
-      _dialog.show(
+      dialog.show(
         message: 'Baixando o livro...',
         type: SimpleFontelicoProgressDialogType.normal,
         elevation: 1,
@@ -62,59 +67,59 @@ class BookStore extends GetxController {
       );
 
       await dio.download(
-        correctedDownloadUrl,
-        file!.path,
+        book.downloadUrl
+            .replaceAll(".images", "")
+            .replaceAll(".noimages", "")
+            .replaceAll(".epub3", ".epub"),
+        file.path,
         deleteOnError: true,
-        onReceiveProgress: (receivedBytes, totalBytes) {
-          receivedBytes = receivedBytes;
-          totalBytes = totalBytes;
-        },
+        onReceiveProgress: (received, total) {},
       );
 
-      _dialog.hide();
+      dialog.hide();
     } catch (error) {
-      return;
+      debugPrint('Error downloading book: $error');
     }
   }
 
   Future<bool> verifyIfBookHasDownloaded() async {
-    String fileName = book.title.toLowerCase().camelCase!;
+    String downloadsDirectory = await getDownloadFilePath();
+    final fileName = book.title.toLowerCase().camelCase!;
+    final filePath = '$downloadsDirectory/$fileName.epub';
+    file = File(filePath.replaceAll("'", ""));
 
-    Directory? appDocDir;
-
-    if (Platform.isIOS) {
-      appDocDir = await getApplicationDocumentsDirectory();
-    } else {
-      appDocDir = Directory('/storage/emulated/0/Download');
-      if (!await appDocDir.exists()) {
-        appDocDir = await getExternalStorageDirectory();
-      }
-    }
-
-    String filePath = '${appDocDir!.path}/$fileName.epub';
-    file = File(filePath);
-
-    if (!file!.existsSync()) {
-      return false;
-    }
-
-    return true;
+    return await file.exists();
   }
 
   Future<void> openBook() async {
-    VocsyEpub.setConfig(
-      themeColor: Colors.green,
-      scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
-    );
+    try {
+      await downloadBook();
 
-    VocsyEpub.open(
-      file!.path,
-    );
+      VocsyEpub.setConfig(
+        themeColor: Colors.green,
+        scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
+      );
+
+      VocsyEpub.open(file.path);
+    } catch (error) {
+      debugPrint('Error opening book: $error');
+    }
+  }
+
+  Future<String> getDownloadFilePath() async {
+    final appDocDir = Platform.isIOS
+        ? await getApplicationDocumentsDirectory()
+        : Directory('/storage/emulated/0/Download');
+    return appDocDir.path;
   }
 
   @override
   void onInit() {
     super.onInit();
-    isFavorited(favoriteBooksStore.verifyIfBookIsFavorite(book));
+    try {
+      isFavorited(favoriteBooksStore.verifyIfBookIsFavorite(book));
+    } catch (error) {
+      debugPrint('Error initializing book: $error');
+    }
   }
 }

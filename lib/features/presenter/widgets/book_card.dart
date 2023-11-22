@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:simple_fontellico_progress_dialog/simple_fontico_loading.dart';
 
 class BookCard extends StatelessWidget {
@@ -25,18 +26,25 @@ class BookCard extends StatelessWidget {
   final double? marginLeft;
   final double? marginRight;
 
+  Future<void> requestPermissions() async {
+    var status = await Permission.storage.status;
+    if (status.isDenied) {
+      status = await Permission.storage.request();
+    }
+    if (status.isGranted) {
+      // A permissão foi concedida
+      print("Permissão concedida!");
+    } else {
+      // A permissão foi negada
+      print("Permissão negada!");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        bool hasDowloaded = await bookStore.verifyIfBookHasDownloaded();
-
-        if (hasDowloaded == false) {
-          await bookStore.downloadBook();
-          bookStore.openBook();
-        } else {
-          bookStore.openBook();
-        }
+        await requestPermissions();
       },
       child: Ink(
         child: Container(

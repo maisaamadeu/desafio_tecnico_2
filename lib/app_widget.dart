@@ -1,4 +1,3 @@
-import 'package:desafio_tecnico_2/app_binding.dart';
 import 'package:desafio_tecnico_2/features/presenter/base_page.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,6 @@ class AppWidget extends StatelessWidget {
         },
       ),
       home: BasePage(),
-      initialBinding: AppBinding(),
     );
   }
 }
