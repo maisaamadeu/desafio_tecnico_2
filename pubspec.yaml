@@ -15,6 +15,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_modular: ^5.0.3
+  flutter_native_splash: ^2.3.6
   get: ^4.6.6
   google_fonts: ^6.1.0
   mocktail: ^1.0.1
@@ -24,6 +25,12 @@ dependencies:
   simple_fontellico_progress_dialog: ^0.3.0
   vocsy_epub_viewer: ^2.0.0
 
+flutter_native_splash:
+  color: "#4CAF50"
+  image: assets/app/splash.png
+  android: true
+  ios: true
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -31,3 +38,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/app/

@@ -1,5 +1,6 @@
 import 'package:desafio_tecnico_2/features/presenter/stores/all_books_store.dart';
 import 'package:desafio_tecnico_2/features/presenter/stores/book_store.dart';
+import 'package:desafio_tecnico_2/features/presenter/theme/app_colors.dart';
 import 'package:desafio_tecnico_2/features/presenter/widgets/book_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -19,10 +20,10 @@ class BooksPage extends StatelessWidget {
             Obx(
               () {
                 if (allBooksStore.isLoading.value) {
-                  return const Expanded(
+                  return Expanded(
                     child: Center(
                       child: CircularProgressIndicator(
-                        color: Colors.green,
+                        color: AppColors().primaryColor,
                       ),
                     ),
                   );

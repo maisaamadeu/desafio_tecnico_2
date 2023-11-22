@@ -1,3 +1,4 @@
+import 'package:desafio_tecnico_2/features/presenter/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -56,10 +57,10 @@ class BookCard extends StatelessWidget {
             onPressed: () {
               openAppSettings();
             },
-            child: const Text(
+            child: Text(
               'ABRIR CONFIGURAÇÕES',
               style: TextStyle(
-                color: Colors.green,
+                color: AppColors().primaryColor,
               ),
             ),
           ),
@@ -100,7 +101,7 @@ class BookCard extends StatelessWidget {
               progressIndicatorBuilder: (context, url, downloadProgress) =>
                   CircularProgressIndicator(
                 value: downloadProgress.progress,
-                color: Colors.green,
+                color: AppColors().primaryColor,
               ),
               errorWidget: (context, url, error) => const Icon(Icons.error),
               imageBuilder: (context, imageProvider) => Stack(

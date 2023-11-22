@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:desafio_tecnico_2/features/presenter/theme/app_colors.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -87,7 +88,7 @@ class BookStore extends GetxController {
       _showProgressDialog('Abrindo seu livro...');
 
       VocsyEpub.setConfig(
-        themeColor: Colors.green,
+        themeColor: AppColors().primaryColor,
         scrollDirection: EpubScrollDirection.ALLDIRECTIONS,
         allowSharing: true,
         enableTts: true,
@@ -126,7 +127,7 @@ class BookStore extends GetxController {
       elevation: 1,
       horizontal: true,
       width: 300,
-      indicatorColor: Colors.green,
+      indicatorColor: AppColors().primaryColor,
       textStyle: GoogleFonts.inter(
         fontSize: 18,
       ),
